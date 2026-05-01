@@ -1,11 +1,23 @@
 /**
- * Voice Health - Развлекательный анализатор голоса
+ * Анализатор голоса - Развлекательное приложение
  * Версия: 1.0.0
- * Для публикации в RuStore (категория: Развлечения)
  */
 
 (function() {
     'use strict';
+
+    // Запрет pull-to-refresh
+    document.addEventListener('touchmove', function(e) {
+        if (e.target === document.body || e.target === document.documentElement) {
+            e.preventDefault();
+        }
+    }, { passive: false });
+
+    // Запрет обновления страницы
+    window.addEventListener('beforeunload', function(e) {
+        e.preventDefault();
+        e.returnValue = '';
+    });
 
     // ==================== DOM Элементы ====================
     const micButton = document.getElementById('micButton');
@@ -27,16 +39,15 @@
     let isRecording = false;
     let isProcessing = false;
     let recordingTimer = null;
-    const MAX_RECORD_TIME = 4000; // 4 секунды максимум
+    const MAX_RECORD_TIME = 4000;
 
     // ==================== Сценарии анализа ====================
-    // Это РАЗВЛЕКАТЕЛЬНЫЕ сценарии. Не медицинские!
     const scenarios = [
         {
             id: 'sleep',
             icon: '😴',
             title: 'Вам нужен сон!',
-            description: 'Ваш голос звучит уставшим. Тембр понижен, темп речи замедлен. Рекомендуется отдохнуть или устроить короткий дневной сон (20-30 минут).',
+            description: 'Ваш голос звучит уставшим. Тембр понижен, темп речи замедлен. Рекомендуется отдохнуть или устроить короткий дневной сон.',
             tips: [
                 'Попробуйте технику дыхания 4-7-8',
                 'Избегайте кофеина за 6 часов до сна',
@@ -86,14 +97,11 @@
         }
     ];
 
-    // История анализов (хранится в памяти + localStorage)
+    // История анализов
     let history = JSON.parse(localStorage.getItem('voiceHealthHistory') || '[]');
 
     // ==================== Функции ====================
 
-    /**
-     * Получить случайный сценарий с учётом весов
-     */
     function getWeightedRandomScenario() {
         const totalWeight = scenarios.reduce((sum, s) => sum + s.weight, 0);
         let random = Math.random() * totalWeight;
@@ -105,27 +113,16 @@
         return scenarios[scenarios.length - 1];
     }
 
-    /**
-     * Сгенерировать "точность анализа" (72-97%)
-     */
     function getAccuracy() {
         return Math.floor(Math.random() * 25) + 72;
     }
 
-    /**
-     * Обновить UI с результатом
-     */
     function updateResultUI(scenario) {
         const accuracy = getAccuracy();
         
-        // Анимируем смену
         resultCard.style.transition = 'all 0.3s ease';
         resultCard.style.borderColor = scenario.color + '70';
         resultCard.style.boxShadow = `0 15px 35px -10px ${scenario.color}40`;
-        
-        // Обновляем полосу сверху карточки
-        const topBar = resultCard.querySelector('::before');
-        resultCard.style.setProperty('--accent-color', scenario.color);
         
         resultIcon.textContent = scenario.icon;
         resultIcon.style.animation = 'none';
@@ -134,12 +131,10 @@
         resultTitle.textContent = scenario.title;
         resultDescription.textContent = scenario.description;
         
-        // Шкала уверенности
         progressFill.style.width = accuracy + '%';
         progressFill.style.background = scenario.color;
         confidenceValue.textContent = accuracy + '%';
         
-        // Дополнительные советы
         if (scenario.tips && scenario.tips.length > 0) {
             let tipsHTML = '<ul>';
             scenario.tips.forEach(tip => {
@@ -153,9 +148,6 @@
         }
     }
 
-    /**
-     * Добавить запись в историю
-     */
     function addToHistory(scenario) {
         const record = {
             icon: scenario.icon,
@@ -166,20 +158,14 @@
         
         history.unshift(record);
         
-        // Ограничим историю 10 записями
         if (history.length > 10) {
             history = history.slice(0, 10);
         }
         
-        // Сохраняем в localStorage
         localStorage.setItem('voiceHealthHistory', JSON.stringify(history));
-        
         renderHistory();
     }
 
-    /**
-     * Отрендерить историю
-     */
     function renderHistory() {
         if (history.length === 0) {
             historyList.innerHTML = '<span class="history-empty">Здесь будут отображаться ваши анализы</span>';
@@ -195,9 +181,6 @@
         `).join('');
     }
 
-    /**
-     * Сбросить UI в начальное состояние
-     */
     function resetUI() {
         resultCard.style.borderColor = 'var(--border)';
         resultCard.style.boxShadow = 'var(--shadow-card)';
@@ -209,14 +192,10 @@
         extraTips.classList.remove('visible');
     }
 
-    /**
-     * Начать запись
-     */
     async function startRecording() {
         if (isRecording || isProcessing) return;
         
         try {
-            // Запрашиваем доступ к микрофону
             stream = await navigator.mediaDevices.getUserMedia({ 
                 audio: {
                     echoCancellation: true,
@@ -241,17 +220,14 @@
             
             mediaRecorder.onstop = handleRecordingStop;
             
-            // Начинаем запись
             mediaRecorder.start();
             isRecording = true;
             
-            // Обновляем UI
             micButton.classList.add('listening');
             micWrapper.classList.add('listening');
             micHint.textContent = 'Говорите...';
             resetUI();
             
-            // Автоостановка через MAX_RECORD_TIME
             recordingTimer = setTimeout(() => {
                 if (isRecording) {
                     stopRecording();
@@ -274,9 +250,6 @@
         }
     }
 
-    /**
-     * Остановить запись
-     */
     function stopRecording() {
         if (!isRecording) return;
         
@@ -286,7 +259,6 @@
             mediaRecorder.stop();
         }
         
-        // Освобождаем микрофон
         if (stream) {
             stream.getTracks().forEach(track => track.stop());
             stream = null;
@@ -297,38 +269,24 @@
         micWrapper.classList.remove('listening');
     }
 
-    /**
-     * Обработка остановки записи
-     */
     function handleRecordingStop() {
         isProcessing = true;
         micButton.classList.add('processing');
         micHint.textContent = 'Анализируем...';
         
-        // Имитация обработки (1.5-2.5 секунды)
         const processingTime = 1500 + Math.random() * 1000;
         
         setTimeout(() => {
-            // Выбираем сценарий
             const scenario = getWeightedRandomScenario();
-            
-            // Обновляем UI
             updateResultUI(scenario);
-            
-            // Добавляем в историю
             addToHistory(scenario);
             
-            // Сбрасываем состояние
             isProcessing = false;
             micButton.classList.remove('processing');
             micHint.textContent = 'Нажмите и говорите 3 секунды';
-            
         }, processingTime);
     }
 
-    /**
-     * Показать ошибку
-     */
     function showError(message) {
         resultIcon.textContent = '⚠️';
         resultTitle.textContent = 'Ошибка';
@@ -337,20 +295,8 @@
         micHint.textContent = 'Попробуйте снова';
     }
 
-    /**
-     * Очистить историю
-     */
-    function clearHistory() {
-        if (confirm('Очистить всю историю анализов?')) {
-            history = [];
-            localStorage.removeItem('voiceHealthHistory');
-            renderHistory();
-        }
-    }
-
     // ==================== Обработчики событий ====================
 
-    // Клик по кнопке микрофона
     micButton.addEventListener('click', (e) => {
         e.preventDefault();
         if (isRecording) {
@@ -360,7 +306,6 @@
         }
     });
 
-    // Обработка touch событий для мобильных (предотвращаем двойное срабатывание)
     micButton.addEventListener('touchstart', (e) => {
         e.preventDefault();
         if (isRecording) {
@@ -370,30 +315,29 @@
         }
     }, { passive: false });
 
-    // Долгое нажатие на историю для очистки
     historyList.addEventListener('dblclick', (e) => {
         if (history.length > 0) {
-            clearHistory();
+            if (confirm('Очистить всю историю анализов?')) {
+                history = [];
+                localStorage.removeItem('voiceHealthHistory');
+                renderHistory();
+            }
         }
     });
 
-    // Инициализация при загрузке
     function init() {
         renderHistory();
         resetUI();
         
-        // Проверяем поддержку микрофона
         if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-            showError('Ваш браузер не поддерживает запись аудио. Попробуйте современный браузер.');
+            showError('Ваш браузер не поддерживает запись аудио.');
             micButton.style.pointerEvents = 'none';
             micButton.style.opacity = '0.5';
         }
         
-        console.log('Voice Health App инициализирован (v1.0.0)');
-        console.log('⚠️ Это развлекательное приложение. Не медицинский прибор.');
+        console.log('Анализатор голоса v1.0.0');
     }
 
-    // Запуск
     init();
 
 })();
