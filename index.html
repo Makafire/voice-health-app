@@ -77,7 +77,6 @@
 
     <script src="js/app.js"></script>
     <script>
-        // Регистрация Service Worker для PWA
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('sw.js')
