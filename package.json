@@ -1,0 +1,10 @@
+{
+    "name": "voice-health",
+    "version": "1.0.0",
+    "description": "Развлекательный анализатор голоса",
+    "private": true,
+    "scripts": {
+        "build": "echo 'Static site - no build needed' && mkdir -p dist && cp -r css js icons index.html manifest.json sw.js dist/"
+    },
+    "dependencies": {}
+}
