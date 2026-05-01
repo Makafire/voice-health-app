@@ -13,12 +13,6 @@
         }
     }, { passive: false });
 
-    // Запрет обновления страницы
-    window.addEventListener('beforeunload', function(e) {
-        e.preventDefault();
-        e.returnValue = '';
-    });
-
     // ==================== DOM Элементы ====================
     const micButton = document.getElementById('micButton');
     const micWrapper = document.getElementById('micWrapper');
@@ -47,7 +41,7 @@
             id: 'sleep',
             icon: '😴',
             title: 'Вам нужен сон!',
-            description: 'Ваш голос звучит уставшим. Тембр понижен, темп речи замедлен. Рекомендуется отдохнуть или устроить короткий дневной сон.',
+            description: 'Ваш голос звучит уставшим. Тембр понижен, темп речи замедлен. Рекомендуется отдохнуть.',
             tips: [
                 'Попробуйте технику дыхания 4-7-8',
                 'Избегайте кофеина за 6 часов до сна',
@@ -60,7 +54,7 @@
             id: 'active',
             icon: '⚡',
             title: 'Требуется активность!',
-            description: 'В голосе слышна некоторая зажатость и монотонность. Похоже, вы засиделись. Разминка или прогулка помогут взбодриться.',
+            description: 'В голосе слышна зажатость и монотонность. Похоже, вы засиделись. Разминка поможет взбодриться.',
             tips: [
                 'Сделайте 10-минутную разминку',
                 'Выйдите на короткую прогулку',
@@ -73,11 +67,11 @@
             id: 'eat',
             icon: '🍎',
             title: 'Пора перекусить!',
-            description: 'Анализ показывает признаки снижения энергии. Вероятно, уровень глюкозы снизился. Рекомендуется полезный перекус или приём пищи.',
+            description: 'Анализ показывает признаки снижения энергии. Рекомендуется полезный перекус.',
             tips: [
                 'Фрукты или орехи — отличный выбор',
                 'Не забудьте выпить стакан воды',
-                'Избегайте сладких снеков — дадут временный эффект'
+                'Избегайте сладких снеков'
             ],
             color: '#34d399',
             weight: 25
@@ -86,7 +80,7 @@
             id: 'chill',
             icon: '🧘',
             title: 'Вы в отличной форме!',
-            description: 'Ваш голос звучит ровно и уверенно. Энергетический баланс в норме. Продолжайте в том же духе!',
+            description: 'Ваш голос звучит ровно и уверенно. Энергетический баланс в норме.',
             tips: [
                 'Поддерживайте водный баланс',
                 'Сделайте пятиминутную медитацию',
@@ -239,11 +233,11 @@
             
             let errorMessage = 'Не удалось получить доступ к микрофону. ';
             if (error.name === 'NotAllowedError') {
-                errorMessage += 'Пожалуйста, разрешите доступ в настройках браузера.';
+                errorMessage += 'Разрешите доступ в настройках.';
             } else if (error.name === 'NotFoundError') {
-                errorMessage += 'Микрофон не найден на устройстве.';
+                errorMessage += 'Микрофон не найден.';
             } else {
-                errorMessage += 'Проверьте подключение микрофона.';
+                errorMessage += 'Проверьте микрофон.';
             }
             
             showError(errorMessage);
@@ -315,9 +309,9 @@
         }
     }, { passive: false });
 
-    historyList.addEventListener('dblclick', (e) => {
+    historyList.addEventListener('dblclick', () => {
         if (history.length > 0) {
-            if (confirm('Очистить всю историю анализов?')) {
+            if (confirm('Очистить историю анализов?')) {
                 history = [];
                 localStorage.removeItem('voiceHealthHistory');
                 renderHistory();
@@ -330,7 +324,7 @@
         resetUI();
         
         if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-            showError('Ваш браузер не поддерживает запись аудио.');
+            showError('Браузер не поддерживает запись аудио.');
             micButton.style.pointerEvents = 'none';
             micButton.style.opacity = '0.5';
         }
