@@ -24,47 +24,62 @@
     box-sizing: border-box;
 }
 
+html, body {
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     background: var(--bg-primary);
     color: var(--text-primary);
-    min-height: 100vh;
     display: flex;
     justify-content: center;
-    padding: 20px;
     -webkit-tap-highlight-color: transparent;
     user-select: none;
+    overscroll-behavior: none;
+    -webkit-overflow-scrolling: auto;
 }
 
 .app-container {
     width: 100%;
     max-width: 420px;
+    height: 100%;
     display: flex;
     flex-direction: column;
-    gap: 24px;
-    padding-bottom: 40px;
+    gap: 20px;
+    padding: 16px 20px;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 /* Шапка */
 .header {
     text-align: center;
-    padding-top: 20px;
+    padding-top: 12px;
+    flex-shrink: 0;
 }
 
 .logo {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 12px;
-    margin-bottom: 8px;
+    gap: 10px;
+    margin-bottom: 4px;
 }
 
 .logo-icon {
-    font-size: 36px;
+    font-size: 32px;
 }
 
 .logo h1 {
-    font-size: 32px;
+    font-size: 28px;
     font-weight: 800;
     background: linear-gradient(135deg, #c084fc, #818cf8);
     -webkit-background-clip: text;
@@ -74,20 +89,21 @@ body {
 
 .subtitle {
     color: var(--text-secondary);
-    font-size: 14px;
-    line-height: 1.5;
+    font-size: 13px;
+    line-height: 1.4;
 }
 
 /* Карточка результата */
 .result-card {
     background: var(--bg-card);
     border-radius: var(--radius-lg);
-    padding: 32px 24px;
+    padding: 24px 20px;
     text-align: center;
     border: 2px solid var(--border);
     transition: all 0.4s ease;
     position: relative;
     overflow: hidden;
+    flex-shrink: 0;
 }
 
 .result-card::before {
@@ -102,30 +118,30 @@ body {
 }
 
 .result-icon {
-    font-size: 64px;
-    margin-bottom: 16px;
+    font-size: 56px;
+    margin-bottom: 12px;
     animation: fadeIn 0.5s ease;
 }
 
 .result-title {
-    font-size: 24px;
+    font-size: 22px;
     font-weight: 700;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
 }
 
 .result-description {
     color: var(--text-secondary);
-    font-size: 15px;
-    line-height: 1.6;
-    margin-bottom: 20px;
+    font-size: 14px;
+    line-height: 1.5;
+    margin-bottom: 16px;
 }
 
 /* Шкала уверенности */
 .confidence-bar {
     display: flex;
     align-items: center;
-    gap: 12px;
-    margin-bottom: 16px;
+    gap: 10px;
+    margin-bottom: 12px;
 }
 
 .confidence-label {
@@ -160,9 +176,9 @@ body {
 .extra-tips {
     background: rgba(255, 255, 255, 0.03);
     border-radius: var(--radius-sm);
-    padding: 12px 16px;
-    margin-top: 8px;
-    font-size: 13px;
+    padding: 12px 14px;
+    margin-top: 6px;
+    font-size: 12px;
     color: var(--text-secondary);
     text-align: left;
     display: none;
@@ -179,8 +195,8 @@ body {
 }
 
 .extra-tips li {
-    padding: 4px 0;
-    padding-left: 20px;
+    padding: 3px 0;
+    padding-left: 18px;
     position: relative;
 }
 
@@ -196,21 +212,22 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
+    flex-shrink: 0;
 }
 
 .mic-wrapper {
     position: relative;
-    width: 160px;
-    height: 160px;
+    width: 150px;
+    height: 150px;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
 .mic-button {
-    width: 130px;
-    height: 130px;
+    width: 120px;
+    height: 120px;
     border-radius: 50%;
     background: var(--bg-button);
     border: 4px solid var(--border);
@@ -219,12 +236,13 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 4px;
+    gap: 2px;
     transition: all 0.3s ease;
     position: relative;
     z-index: 2;
     box-shadow: var(--shadow-button);
     -webkit-tap-highlight-color: transparent;
+    outline: none;
 }
 
 .mic-button:active {
@@ -232,7 +250,7 @@ body {
 }
 
 .mic-icon {
-    font-size: 48px;
+    font-size: 44px;
     transition: transform 0.3s ease;
 }
 
@@ -269,8 +287,8 @@ body {
 /* Пульсирующее кольцо */
 .pulse-ring {
     position: absolute;
-    width: 150px;
-    height: 150px;
+    width: 140px;
+    height: 140px;
     border-radius: 50%;
     border: 2px solid var(--danger);
     opacity: 0;
@@ -324,45 +342,44 @@ body {
 .history-section {
     background: var(--bg-card);
     border-radius: var(--radius-md);
-    padding: 20px;
+    padding: 16px;
     border: 1px solid var(--border);
+    flex-shrink: 0;
 }
 
 .history-title {
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 600;
-    margin-bottom: 12px;
+    margin-bottom: 10px;
     color: var(--text-primary);
 }
 
 .history-list {
     display: flex;
     flex-direction: column;
-    gap: 8px;
-    max-height: 200px;
-    overflow-y: auto;
+    gap: 6px;
 }
 
 .history-empty {
     color: var(--text-secondary);
     font-size: 13px;
     text-align: center;
-    padding: 12px;
+    padding: 8px;
 }
 
 .history-item {
     display: flex;
     align-items: center;
     gap: 10px;
-    padding: 10px 14px;
+    padding: 8px 12px;
     background: rgba(255, 255, 255, 0.03);
     border-radius: var(--radius-sm);
-    font-size: 14px;
+    font-size: 13px;
     animation: fadeIn 0.3s ease;
 }
 
 .history-item-icon {
-    font-size: 24px;
+    font-size: 22px;
 }
 
 .history-item-time {
@@ -375,13 +392,18 @@ body {
 .disclaimer {
     text-align: center;
     padding: 8px;
-    margin-top: 8px;
+    flex-shrink: 0;
 }
 
 .disclaimer p {
-    font-size: 11px;
+    font-size: 10px;
     color: #64748b;
-    line-height: 1.5;
+    line-height: 1.4;
+}
+
+/* Убираем внешние ссылки */
+a[href^="http"] {
+    display: none !important;
 }
 
 /* Анимации */
@@ -413,32 +435,4 @@ body {
 @keyframes waveAnimation {
     0%, 100% { height: 10px; }
     50% { height: 30px; }
-}
-
-/* Адаптация для тёмной темы (всегда тёмная) */
-@media (prefers-color-scheme: light) {
-    body {
-        background: #0f172a; /* Всё равно тёмная тема */
-    }
-}
-
-/* Мобильная оптимизация */
-@media (max-width: 380px) {
-    .app-container {
-        gap: 16px;
-        padding: 12px;
-    }
-    
-    .result-card {
-        padding: 20px 16px;
-    }
-    
-    .mic-button {
-        width: 110px;
-        height: 110px;
-    }
-    
-    .mic-icon {
-        font-size: 40px;
-    }
 }
