@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#0f172a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Voice Health">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/x-icon" href="icons/favicon.ico">
+    <link rel="apple-touch-icon" href="icons/icon-192.png">
+    <title>Voice Health — Анализ голоса</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Шапка -->
+        <header class="header">
+            <div class="logo">
+                <span class="logo-icon">🧬</span>
+                <h1>Voice Health</h1>
+            </div>
+            <p class="subtitle">Развлекательный анализатор состояния по голосу</p>
+        </header>
+
+        <!-- Основная карточка результата -->
+        <div class="result-card" id="resultCard">
+            <div class="result-icon" id="resultIcon">🤔</div>
+            <h2 class="result-title" id="resultTitle">Ожидание голоса</h2>
+            <p class="result-description" id="resultDescription">
+                Нажмите на микрофон и скажите что-нибудь в течение 3 секунд
+            </p>
+            
+            <!-- Шкала уверенности -->
+            <div class="confidence-bar">
+                <span class="confidence-label">Точность анализа</span>
+                <div class="progress-track">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <span class="confidence-value" id="confidenceValue">0%</span>
+            </div>
+
+            <!-- Дополнительные советы -->
+            <div class="extra-tips" id="extraTips"></div>
+        </div>
+
+        <!-- Кнопка микрофона -->
+        <div class="mic-section">
+            <div class="mic-wrapper" id="micWrapper">
+                <button class="mic-button" id="micButton" aria-label="Записать голос">
+                    <span class="mic-icon">🎤</span>
+                    <span class="mic-text">Запись</span>
+                </button>
+                <div class="pulse-ring" id="pulseRing"></div>
+                <div class="sound-waves" id="soundWaves">
+                    <span></span><span></span><span></span><span></span><span></span>
+                </div>
+            </div>
+            <p class="mic-hint" id="micHint">Нажмите и говорите 3 секунды</p>
+        </div>
+
+        <!-- История рекомендаций -->
+        <div class="history-section">
+            <h3 class="history-title">📋 Последние рекомендации</h3>
+            <div class="history-list" id="historyList">
+                <span class="history-empty">Здесь будут отображаться ваши анализы</span>
+            </div>
+        </div>
+
+        <!-- Дисклеймер -->
+        <footer class="disclaimer">
+            <p>⚠️ Это приложение носит исключительно развлекательный характер и не является медицинским прибором. Анализ голоса имитируется локально на устройстве.</p>
+        </footer>
+    </div>
+
+    <script src="js/app.js"></script>
+    <script>
+        // Регистрация Service Worker для PWA
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js')
+                    .then(reg => console.log('SW зарегистрирован'))
+                    .catch(err => console.log('Ошибка SW:', err));
+            });
+        }
+    </script>
+</body>
+</html>
