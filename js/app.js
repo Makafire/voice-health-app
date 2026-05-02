@@ -24,7 +24,6 @@
     const progressFill = document.getElementById('progressFill');
     const confidenceValue = document.getElementById('confidenceValue');
     const extraTips = document.getElementById('extraTips');
-    const historyList = document.getElementById('historyList');
 
     // ==================== Состояние ====================
     let mediaRecorder = null;
@@ -91,9 +90,6 @@
         }
     ];
 
-    // История анализов
-    let history = JSON.parse(localStorage.getItem('voiceHealthHistory') || '[]');
-
     // ==================== Функции ====================
 
     function getWeightedRandomScenario() {
@@ -116,7 +112,7 @@
         
         resultCard.style.transition = 'all 0.3s ease';
         resultCard.style.borderColor = scenario.color + '70';
-        resultCard.style.boxShadow = `0 15px 35px -10px ${scenario.color}40`;
+        resultCard.style.boxShadow = `0 12px 30px -8px ${scenario.color}40`;
         
         resultIcon.textContent = scenario.icon;
         resultIcon.style.animation = 'none';
@@ -140,39 +136,6 @@
         } else {
             extraTips.classList.remove('visible');
         }
-    }
-
-    function addToHistory(scenario) {
-        const record = {
-            icon: scenario.icon,
-            title: scenario.title,
-            time: new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' }),
-            timestamp: Date.now()
-        };
-        
-        history.unshift(record);
-        
-        if (history.length > 10) {
-            history = history.slice(0, 10);
-        }
-        
-        localStorage.setItem('voiceHealthHistory', JSON.stringify(history));
-        renderHistory();
-    }
-
-    function renderHistory() {
-        if (history.length === 0) {
-            historyList.innerHTML = '<span class="history-empty">Здесь будут отображаться ваши анализы</span>';
-            return;
-        }
-        
-        historyList.innerHTML = history.map(item => `
-            <div class="history-item">
-                <span class="history-item-icon">${item.icon}</span>
-                <span>${item.title}</span>
-                <span class="history-item-time">${item.time}</span>
-            </div>
-        `).join('');
     }
 
     function resetUI() {
@@ -273,7 +236,6 @@
         setTimeout(() => {
             const scenario = getWeightedRandomScenario();
             updateResultUI(scenario);
-            addToHistory(scenario);
             
             isProcessing = false;
             micButton.classList.remove('processing');
@@ -309,18 +271,7 @@
         }
     }, { passive: false });
 
-    historyList.addEventListener('dblclick', () => {
-        if (history.length > 0) {
-            if (confirm('Очистить историю анализов?')) {
-                history = [];
-                localStorage.removeItem('voiceHealthHistory');
-                renderHistory();
-            }
-        }
-    });
-
     function init() {
-        renderHistory();
         resetUI();
         
         if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
