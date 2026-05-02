@@ -6,6 +6,15 @@
 (function() {
     'use strict';
 
+    // Убираем все Service Worker уведомления
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.getRegistrations().then(function(registrations) {
+            for(let registration of registrations) {
+                registration.unregister();
+            }
+        });
+    }
+
     // Запрет pull-to-refresh
     document.addEventListener('touchmove', function(e) {
         if (e.target === document.body || e.target === document.documentElement) {
@@ -272,6 +281,15 @@
     }, { passive: false });
 
     function init() {
+        // Убираем Service Worker уведомления
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.getRegistrations().then(function(registrations) {
+                for(let registration of registrations) {
+                    registration.unregister();
+                }
+            });
+        }
+        
         resetUI();
         
         if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
