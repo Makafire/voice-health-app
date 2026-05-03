@@ -64,13 +64,19 @@ body {
 /* Рекламный баннер */
 .ad-banner {
     width: 100%;
-    height: 48px;
-    min-height: 48px;
-    max-height: 48px;
+    min-height: 50px;
     flex-shrink: 0;
     display: flex;
     justify-content: center;
     align-items: center;
+    background: #1e293b;
+    border-radius: 8px;
+    margin: 2px 0;
+    overflow: hidden;
+}
+
+.ad-banner iframe {
+    max-width: 100%;
 }
 
 /* Шапка */
