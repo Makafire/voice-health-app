@@ -61,9 +61,13 @@
             <p class="mic-hint" id="micHint">Нажмите и говорите 3 секунды</p>
         </div>
 
-        <!-- Рекламный баннер Яндекса -->
+        <!-- Рекламный баннер VK -->
         <div class="ad-banner">
-            <div id="yandex_rtb_R-M-19205832-1"></div>
+            <ins class="mrg-tag" 
+                style="display:inline-block;width:320px;height:50px" 
+                data-ad-client="ad-2008559"
+                data-ad-slot="2008559">
+            </ins>
         </div>
 
         <!-- Дисклеймер -->
@@ -72,14 +76,9 @@
         </footer>
     </div>
 
+    <script async src="https://ad.mail.ru/static/ads-async.js"></script>
     <script>
-        window.yaContextCb = window.yaContextCb || [];
-        (function() {
-            var script = document.createElement('script');
-            script.src = 'https://yandex.ru/ads/system/context.js';
-            script.async = true;
-            document.head.appendChild(script);
-        })();
+        (MRGtag = window.MRGtag || []).push({});
     </script>
 
     <script src="js/app.js"></script>
